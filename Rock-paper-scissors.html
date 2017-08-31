@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<meta charset='utf-8'>
+<head><title>Rock Paper Scissors</title>
+  <link rel="stylesheet" href="assets/main.css">
+</head>
+
+<body>
+<div class="enemyWrap">
+  <div id="enemyLife"><div id="enemyLifeIn"></div></div>
+  <div id="enemy"><img src='assets/gu.png' id='enemyPic'></div>
+  <div id="btn" class="">Start!</div>
+</div>
+
+<div class="youWrap">
+  <div id="youLife"><div id="youLifeIn"></div></div>
+  <div id="yourselfwrap">
+  <div id="you1" class=''><img src='assets/gu.png' class='youPic'></div>
+  <div id="you2" class=''><img src='assets/ch.png' class='youPic'></div>
+  <div id="you3" class=''><img src='assets/pa.png' class='youPic'></div>
+</div>
+</div>
+
+
+  <script>
+
+  // じゃんけんアルゴリズム
+  // 　グー＝０　チョ＝１　パー＝２　　(a-b+3)%3
+  // 　勝ち　２　負け　１　あいこ　０
+  (function (){
+    'use strict';
+    var enemyLifeIn=document.getElementById('enemyLifeIn').style;
+    var youLifeIn=document.getElementById('youLifeIn').style;
+    var enemyLifeInt=document.getElementById('enemyLifeIn');
+    var youLifeInt=document.getElementById('youLifeIn');
+    var enemyPic=document.getElementById('enemyPic');
+    var you1=document.getElementById('you1');
+    var you2=document.getElementById('you2');
+    var you3=document.getElementById('you3');
+    var btn=document.getElementById('btn');
+
+
+    var enemyArray=['assets/gu.png','assets/ch.png','assets/pa.png'];
+    // var rand=function(){
+    //    return Math.floor(Math.random()*enemyArray.length);
+    //  };
+    var rand;
+
+    var timerId;
+    var result;
+    var damage=20;
+    var youlife=100;
+    var enemylife=100;
+    var a;
+    var b;
+    var clickFlg;
+    var resetFlg=false;
+
+
+    function whatEnemy(){
+      clearTimeout(timerId);
+      b=rand;
+    };
+
+   function jadge(){
+     if((a-b+3)%3===0){
+       setTimeout(enemyJyanken,1100);
+       return;
+     }
+     else if ((a-b+3)%3===1) {
+       youlife-=damage;
+       youLifeIn.width =youlife+'%';
+       if(youlife<=0){
+         youLifeInt.addEventListener('transitionend',lose);
+           return;
+       }
+     }else {
+       enemylife-=damage;
+       enemyLifeIn.width =enemylife+'%';
+       if(enemylife<=0){
+         enemyLifeInt.addEventListener('transitionend',win);
+          return;
+       }
+     }
+
+   setTimeout(enemyJyanken,1100);
+   }
+
+   function win(){
+     alert('YOU WIN!')
+     reset();
+   }
+
+   function lose(){
+     alert('YOU LOSE!')
+     reset();
+   }
+
+   function reset(){
+     youlife=100;
+     youLifeIn.width =youlife+'%';
+     enemylife=100;
+     enemyLifeIn.width =youlife+'%';
+     clearTimeout(timerId);
+     btn.innerHTML='start!'
+     resetFlg=false;
+     clickFlg=false;
+     youLifeInt.removeEventListener('transitionend',lose);
+     enemyLifeInt.removeEventListener('transitionend',win);
+   };
+
+  function yougu(){
+    if(clickFlg){
+    clickFlg=false;
+    whatEnemy();
+    a =0;
+    jadge();
+  }else {
+      return;
+    }
+  }
+
+  function youch(){
+    if(clickFlg){
+    clickFlg=false;
+    whatEnemy();
+    a =1;
+    jadge();
+  }else {
+      return;
+    }
+  }
+
+  function youpa(){
+    if(clickFlg){
+    clickFlg=false;
+    whatEnemy();
+    a =2;
+    jadge();
+    }else {
+      return;
+    }
+  }
+    you1.addEventListener('click',yougu);
+
+    you2.addEventListener('click',youch);
+
+    you3.addEventListener('click',youpa);
+
+    function enemyJyanken(){
+      clickFlg=true;
+    rand= Math.floor(Math.random()*enemyArray.length);
+      enemyPic.src=enemyArray[rand];
+      clearTimeout(timerId);
+    timerId=setTimeout(enemyJyanken,50);
+    }
+
+
+     btn.addEventListener('click',function(){
+       enemyJyanken();
+       btn.innerHTML='reset'
+       if(!resetFlg) {
+         enemyJyanken();
+         btn.innerHTML='reset'
+         resetFlg=true;
+       }else {
+         reset();
+         resetFlg=false;
+       }
+     })
+
+     btn.addEventListener('mousedown',function(){
+       btn.className='pushed'
+     })
+
+     btn.addEventListener('mouseup',function(){
+       btn.className=''
+     })
+
+
+
+  })();
+  </script>
+</body>
+</html>
